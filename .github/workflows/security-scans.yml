@@ -8,6 +8,7 @@ jobs:
   sonar-scan:
     name: SonarQube Analysis
     runs-on: ubuntu-latest
+    continue-on-error: true # Ensures next job runs even if this fails
     steps:
       - uses: actions/checkout@v4
         with:
@@ -21,13 +22,14 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.organization=copilotorg -Dsonar.projectKey=copilotproj
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.organization=my_org_case -Dsonar.projectKey=my-org-case_sonarexample
 
   snyk-scan:
     needs: sonar-scan
     if: always()
     name: Snyk Security Scan
     runs-on: ubuntu-latest
+    continue-on-error: true # Ensures next job runs even if this fails
     steps:
       - uses: actions/checkout@v4
       - name: Snyk Security Scan
